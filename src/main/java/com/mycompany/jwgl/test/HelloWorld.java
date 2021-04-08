@@ -51,13 +51,12 @@ public class HelloWorld {
         if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
-        
+
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
-        
         // Create the window
         window = glfwCreateWindow(640, 480, "Hello World!", NULL, NULL);
         if (window == NULL) {
@@ -74,6 +73,9 @@ public class HelloWorld {
             }
         });
 
+        
+        // Code below is from example just leve it here, untill I become to understand it
+        
 //        // Get the thread stack and push a new frame
 //        try ( MemoryStack stack = stackPush()) {
 //            IntBuffer pWidth = stack.mallocInt(1); // int*
@@ -92,7 +94,6 @@ public class HelloWorld {
 //                    (vidmode.height() - pHeight.get(0)) / 2
 //            );
 //        } // the stack frame is popped automatically
-
         // Make the OpenGL context current
         glfwMakeContextCurrent(window);
         // Enable v-sync
@@ -110,28 +111,43 @@ public class HelloWorld {
         // bindings available for use.
         GL.createCapabilities();
 
+        glEnable(GL_TEXTURE_2D);
+
+        float[] vertices = new float[]{
+            -0.5f, 0.5f, 0,  // bottom left 0
+            -0.5f, -0.5f, 0, // top left 1
+            0.5f, 0.5f, 0,  // bottom right 2
+            0.5f, -0.5f, 0  // top right 3
+        };
+        
+        // Textures Y coordinate is reversed 
+        float[] texture = new float[]{
+            0, 0, // bottpm left 
+            0, 1, // top left
+            1, 0, // bottom right
+            1, 1  // top right
+        };
+        
+        // Vertex's indexes
+        int[] indices = new int[]{
+            0, 1, 2,
+            1, 2, 3
+        };
+
+        Model model = new Model(vertices, texture, indices);
+
+        Texture tex = new Texture("./graphics/1.png");
+        
         // Set the clear color
         //glClearColor(1.0f, 0.5f, 0.0f, 0.0f);
-
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while (!glfwWindowShouldClose(window)) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-            glBegin(GL_QUADS);
-            {
-                glColor4f(1,0,0,0);
-                glVertex2f(-0.5f, 0.5f);
-                glColor4f(0,1,0,0);
-                glVertex2f(0.5f, 0.5f);
-                glColor4f(0,0,1,0);
-                glVertex2f(0.5f, -0.5f);
-                glColor4f(1,1,1,0);
-                glVertex2f(-0.5f, -0.5f);
-            
-            }
-            glEnd();
-            
+            tex.bind();
+            model.render();
+
             glfwSwapBuffers(window); // swap the color buffers
             // Poll for window events. The key callback above will only be
             // invoked during this call.
