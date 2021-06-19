@@ -137,7 +137,7 @@ public class HelloWorld {
         Model model = new Model(vertices, texture, indices);
 
         Shader shader = new Shader("shader");
-        //Texture tex = new Texture("./graphics/1.png");
+        Texture tex = new Texture("./graphics/1.png");
         
         // Set the clear color
         //glClearColor(1.0f, 0.5f, 0.0f, 0.0f);
@@ -146,8 +146,10 @@ public class HelloWorld {
         while (!glfwWindowShouldClose(window)) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-            //tex.bind();
+            
             shader.bind();
+            shader.setUniform("sampler", 0);
+            tex.bind(0);
             model.render();
 
             glfwSwapBuffers(window); // swap the color buffers
